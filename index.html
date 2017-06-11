@@ -23,38 +23,27 @@
       <div class="inputs">
         <!--Method-->
         <div class="form-group column method-col">
-          <label>Method
+          <label>User.function
             <select class="form-control" id="method">
-              <option id="method-get">GET</option>
-              <option id="method-head">HEAD</option>
-              <option id="method-post">POST</option>
-              <option id="method-put">PUT</option>
+              <option id="list">list()</option>
+              <option id="get">get(id)</option>
             </select>
           </label>
         </div>
-        <!--URL-->
+        <!--ID for get method-->
         <div class="form-group column url-col">
-          <label>URL
+          <label>ID
             <div class="input-group">
-              <div class="input-group-addon url-start">https://api.github.com/</div>
-              <input type="text" class="form-control" id="url" placeholder="users" required>
+              <input type="number" class="form-control" min="1" id="id" value="1" required>
             </div>
           </label>
         </div>
-        <!--Headers-->
+        <!--New name if needed-->
         <div class="form-group column request-headers">
-          <label>Header
-            <input type="button" class="form-control btn" id="add-header" value="Add header">
+          <label>New name
+            <input type="text" class="form-control" id="new-name" placeholder="set new name to change">
           </label>
         </div>
-        <!--Data-->
-        <div class="form-group column request-data">
-          <label>Body
-            <input type="button" class="form-control btn disabled" id="add-data" value="Add data">
-          </label>
-        </div>
-      </div>
-      </div>
       </div>
       <input class="btn btn-add" type="submit" value="Send" id="send">
     </form>

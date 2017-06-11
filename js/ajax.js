@@ -3,7 +3,6 @@
   ajax.FAIL = 0;
   ajax.SUCCESS = 1;
 
-  //headers - array with objs {name, value}
 
   //static function for request
   ajax.get = function (url, headers) {

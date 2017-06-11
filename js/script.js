@@ -2,36 +2,23 @@
   function init() {
     //change request method
     $("#method").change(methodChange);
-    $("#add-header").click(addHeader);
-    $("#add-data").click(addBody);
     $("#send").click(makeRequest);
 
     getUsers();
   }
 
   function getUsers() {
-    ajax({
-      method: "GET",
-      url: "https://api.github.com/users"
-    }).done(function (result) {
-      //formating JSON
-      setTextarea(result);
-    })
+    Users = ajax.resource('https://api.github.com/users');
+    setTextarea(Users);
   }
 
   function methodChange() {
     switch ($(this).find("option:selected").attr("id")) {
-      case "method-get":
-        $(".new-request #add-data").addClass("disabled");
+      case "list":
+        $(".new-request #id").addClass("disabled");
         break;
-      case "method-head":
-        $(".new-request #add-data").addClass("disabled");
-        break;
-      case "method-post":
-        $(".new-request #add-data").removeClass("disabled");
-        break;
-      case "method-put":
-        $(".new-request #add-data").addClass("disabled");
+      case "get":
+        $(".new-request #id").removeClass("disabled");
         break;
     }
   }
@@ -248,5 +235,6 @@
     return data;
   }
 
+  var Users;
   init();
 })();
