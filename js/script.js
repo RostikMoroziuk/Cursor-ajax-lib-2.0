@@ -14,10 +14,10 @@
   function methodChange() {
     switch ($(this).find("option:selected").attr("id")) {
       case "list":
-        $(".new-request #id").addClass("disabled");
+        $(".new-request #id").attr("disabled", "disabled");
         break;
       case "get":
-        $(".new-request #id").removeClass("disabled");
+        $(".new-request #id").removeAttr("disabled");
         break;
     }
   }
@@ -160,12 +160,12 @@
       case "list":
         Users.list().done(function (users) {
           setTextarea(users.toString());
-        })
+        });
         break;
       case "get":
-        ajax.head(url, headers).done(function (result) {
-          setTextarea(result);
-        })
+        Users.get(id).done(function (user) {
+          setTextarea(user.toString());
+        });
         break;
       default:
         alert("Not correct method selected");

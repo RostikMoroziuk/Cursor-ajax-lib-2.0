@@ -14,7 +14,9 @@
     var rd = new RequestDescriptor;
     var xhr = new XMLHttpRequest;
     xhr.open("GET", url);
-    setHeaders(xhr, headers);
+    if (headers) {
+      setHeaders(xhr, headers);
+    }
     xhr.onload = function () {
       activateRequestDescriptor(xhr, rd);
     }
@@ -30,7 +32,9 @@
     var rd = new RequestDescriptor;
     var xhr = new XMLHttpRequest;
     xhr.open("HEAD", url);
-    setHeaders(xhr, headers);
+    if (headers) {
+      setHeaders(xhr, headers);
+    }
     xhr.onload = function () {
       activateRequestDescriptor(xhr, rd);
     }
@@ -47,7 +51,9 @@
     var rd = new RequestDescriptor;
     var xhr = new XMLHttpRequest;
     xhr.open("POST", url);
-    setHeaders(xhr, headers);
+    if (headers) {
+      setHeaders(xhr, headers);
+    }
     xhr.onload = function () {
       activateRequestDescriptor(xhr, rd);
     }
@@ -67,7 +73,9 @@
     var rd = new RequestDescriptor;
     var xhr = new XMLHttpRequest;
     xhr.open("PUT", url);
-    setHeaders(xhr, headers);
+    if (headers) {
+      setHeaders(xhr, headers);
+    }
     xhr.onload = function () {
       activateRequestDescriptor(xhr, rd);
     }
@@ -205,8 +213,16 @@
     }
 
     waitingForResponse(this);
-    //
-
+    //find id in this._result
+    var user = this._result.find(function (user) {
+      return user.id == id;
+    })
+    //if was not found make request
+    if (!user) {
+      return ajax.get("https://api.github.com/user/" + id);
+    }
+    this.setResult(user);
+    return this;
   }
 
   function waitingForResponse(context) {
