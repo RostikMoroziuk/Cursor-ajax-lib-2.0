@@ -4,8 +4,13 @@
   ajax.SUCCESS = 1;
 
 
+
   //static function for request
   ajax.get = function (url, headers) {
+    if (!url) {
+      alert("URL not defined");
+      return new RequestDescriptor(ajax.FAIL);
+    }
     var rd = new RequestDescriptor;
     var xhr = new XMLHttpRequest;
     xhr.open("GET", url);
@@ -18,6 +23,10 @@
   }
 
   ajax.head = function (url, headers) {
+    if (!url) {
+      alert("URL not defined");
+      return new RequestDescriptor(ajax.FAIL);
+    }
     var rd = new RequestDescriptor;
     var xhr = new XMLHttpRequest;
     xhr.open("HEAD", url);
@@ -30,6 +39,10 @@
   }
 
   ajax.post = function (url, data, headers) {
+    if (!url) {
+      alert("URL not defined");
+      return new RequestDescriptor(ajax.FAIL);
+    }
     //data in format key=value&key1=value1
     var rd = new RequestDescriptor;
     var xhr = new XMLHttpRequest;
@@ -47,6 +60,10 @@
   }
 
   ajax.put = function (url, headers) {
+    if (!url) {
+      alert("URL not defined");
+      return new RequestDescriptor(ajax.FAIL);
+    }
     var rd = new RequestDescriptor;
     var xhr = new XMLHttpRequest;
     xhr.open("PUT", url);
@@ -55,6 +72,20 @@
       activateRequestDescriptor(xhr, rd);
     }
     xhr.send();
+    return rd;
+  }
+
+  ajax.resource = function (url) {
+    if (!url) {
+      alert("URL not defined");
+      return new RequestDescriptor(ajax.FAIL);
+    }
+
+    var rd = ajax.get(url, []).done();
+    //wait for result
+    // while(rd.getResult() === null) {
+    //   console.log("wait");
+    // };
     return rd;
   }
 
@@ -138,9 +169,14 @@
     var rd = new RequestDescriptor;
     this._onrequestdone = function () {
       if (this._state) {
-        cb(this._result);
+        if (cb) {
+          cb(this._result);
+        }
         rd._state = ajax.SUCCESS;
         rd.setResult(this._result);
+        if (rd._onrequestdone) {
+          rd._onrequestdone();
+        }
       } else {
         alert("AJAX request was failed");
         rd._state = ajax.FAIL;
@@ -156,6 +192,39 @@
 
   RequestDescriptor.prototype.setResult = function (result) {
     this._result = result;
+  }
+
+  RequestDescriptor.prototype.getResult = function () {
+    return this._result;
+  }
+
+  RequestDescriptor.prototype.toString = function () {
+    return "" + this._result;
+  }
+
+  RequestDescriptor.prototype.list = function () {
+    waitingForResponse(this);
+    return this;
+  }
+
+  RequestDescriptor.prototype.get = function (id) {
+    if (id < 1 || isNaN(+id)) {
+      throw new Error("not correct id");
+    }
+
+    waitingForResponse(this);
+
+
+  }
+
+  function waitingForResponse(context) {
+    //waiting for ajax response
+    var timer = setInterval(function () {
+      if (context._result !== null) {
+        context._onrequestdone();
+        clearInterval(timer);
+      }
+    }, 50)
   }
 
   window.ajax = ajax;

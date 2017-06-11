@@ -8,8 +8,7 @@
   }
 
   function getUsers() {
-    Users = ajax.resource('https://api.github.com/users');
-    setTextarea(Users);
+    Users = ajax.resource('https://api.github.com/users');    
   }
 
   function methodChange() {
@@ -153,35 +152,18 @@
 
     // clearTextarea();
 
-    var method = $("#method option:selected").text();
-    var url = "https://api.github.com/" + $("#url").val();
-    var headers = parseHeaders();
-    var data = parseData();
+    var method = $("#method option:selected").attr("data-method");
+    var id = $("#id").val();
+    var newName = $("#new-name").val();
 
     switch (method) {
-      case "GET":
-        ajax.get(url, headers).done(function (result) {
-          setTextarea(result);
+      case "list":
+        Users.list().done(function (users) {
+          setTextarea(users);
         })
         break;
-      case "HEAD":
+      case "get":
         ajax.head(url, headers).done(function (result) {
-          setTextarea(result);
-        })
-        break;
-      case "PUT":
-        // parameters not included in the URL should be encoded as JSON with a Content-Type of 'application/json':
-        ajax.put(url, headers).done(function (result) {
-          setTextarea(result);
-        })
-        break;
-      case "POST":
-        // parameters not included in the URL should be encoded as JSON with a Content-Type of 'application/json':
-        headers.push({
-          name: "Content-Type",
-          value: "application/json"
-        })
-        ajax.post(url, data, headers).done(function (result) {
           setTextarea(result);
         })
         break;
