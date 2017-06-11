@@ -159,7 +159,7 @@
     switch (method) {
       case "list":
         Users.list().done(function (users) {
-          setTextarea(users);
+          setTextarea(users.toString());
         })
         break;
       case "get":

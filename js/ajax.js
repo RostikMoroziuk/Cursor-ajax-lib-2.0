@@ -82,10 +82,6 @@
     }
 
     var rd = ajax.get(url, []).done();
-    //wait for result
-    // while(rd.getResult() === null) {
-    //   console.log("wait");
-    // };
     return rd;
   }
 
@@ -95,7 +91,7 @@
       //if request finish successed
       if (xhr.status == 200) {
         rd.setState(ajax.SUCCESS);
-        rd.setResult(xhr.responseText);
+        rd.setResult(JSON.parse(xhr.responseText));
       } else {
         rd.setState(ajax.FAIL);
       }
@@ -105,7 +101,7 @@
       setTimeout(function () {
         if (xhr.status == 200) {
           rd.setState(ajax.SUCCESS);
-          rd.setResult(xhr.responseText);
+          rd.setResult(JSON.parse(xhr.responseText));
         } else {
           rd.setState(ajax.FAIL);
         }
@@ -170,7 +166,7 @@
     this._onrequestdone = function () {
       if (this._state) {
         if (cb) {
-          cb(this._result);
+          cb(this);
         }
         rd._state = ajax.SUCCESS;
         rd.setResult(this._result);
@@ -194,17 +190,13 @@
     this._result = result;
   }
 
-  RequestDescriptor.prototype.getResult = function () {
-    return this._result;
-  }
-
-  RequestDescriptor.prototype.toString = function () {
-    return "" + this._result;
-  }
-
   RequestDescriptor.prototype.list = function () {
     waitingForResponse(this);
     return this;
+  }
+
+  RequestDescriptor.prototype.toString = function () {
+    return JSON.stringify(this._result, null, 4);
   }
 
   RequestDescriptor.prototype.get = function (id) {
@@ -213,7 +205,7 @@
     }
 
     waitingForResponse(this);
-
+    //
 
   }
 
