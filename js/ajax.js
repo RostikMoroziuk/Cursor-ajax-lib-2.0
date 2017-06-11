@@ -186,6 +186,10 @@
         rd._state = ajax.FAIL;
       }
     }
+
+    if(this._result !== null) {
+      this._onrequestdone();
+    }
     //return new RD for chaining
     return rd;
   }
@@ -221,18 +225,23 @@
     if (!user) {
       return ajax.get("https://api.github.com/user/" + id);
     }
-    this.setResult(user);
-    return this;
+    var rd = new RequestDescriptor;
+    rd.setResult([user]);
+    rd._state = ajax.SUCCESS;
+    rd._onrequestdone = this._onrequestdone;
+    return rd;
   }
 
   function waitingForResponse(context) {
     //waiting for ajax response
-    var timer = setInterval(function () {
-      if (context._result !== null) {
-        context._onrequestdone();
-        clearInterval(timer);
-      }
-    }, 50)
+    if (context._result === null) {
+      var timer = setInterval(function () {
+        if (context._result !== null) {
+          context._onrequestdone();
+          clearInterval(timer);
+        }
+      }, 50)
+    }
   }
 
   window.ajax = ajax;
