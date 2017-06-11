@@ -8,7 +8,7 @@
   }
 
   function getUsers() {
-    Users = ajax.resource('https://api.github.com/users');    
+    Users = ajax.resource('https://api.github.com/users');
   }
 
   function methodChange() {
@@ -163,9 +163,19 @@
         });
         break;
       case "get":
-        Users.get(id).done(function (user) {
-          setTextarea(user.toString());
-        });
+        if (!newName) { //get method
+          Users.get(id).done(function (user) {
+            setTextarea(user.toString());
+          });
+        } else { //get user and make path request
+          Users.get(id).done(function (user) {
+            user.name = newName; 
+            user.save().done(function(user) {
+              setTextarea(user.toString());
+            });
+            setTextarea(user.toString());
+          });
+        }
         break;
       default:
         alert("Not correct method selected");

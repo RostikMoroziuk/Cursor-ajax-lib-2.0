@@ -93,6 +93,25 @@
     return rd;
   }
 
+  //For POST, PATCH, PUT, and DELETE requests, parameters not 
+  //included in the URL should be encoded as JSON with a Content-Type of 'application/json':
+  function save() {
+    var user = this._result[0];
+    console.log("save", this, typeof this._result);
+    var url = "https://api.github.com/user/" + user.id;
+    var rd = new RequestDescriptor;
+    var xhr = new XMLHttpRequest;
+    xhr.open("PATCH", url);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function () {
+      activateRequestDescriptor(xhr, rd);
+    }
+    xhr.send({
+      "name": "" + user.name
+    });
+    return rd;
+  }
+
   function activateRequestDescriptor(xhr, rd) {
     //if RequestDescriptor has handler
     if (rd._onrequestdone) {
@@ -187,7 +206,7 @@
       }
     }
 
-    if(this._result !== null) {
+    if (this._result !== null) {
       this._onrequestdone();
     }
     //return new RD for chaining
@@ -199,7 +218,12 @@
   }
 
   RequestDescriptor.prototype.setResult = function (result) {
-    this._result = result;
+    if(result.forEach) { //if array
+      this._result = result;
+    } else {
+      this._result = [result];
+    }
+    
   }
 
   RequestDescriptor.prototype.list = function () {
@@ -231,6 +255,8 @@
     rd._onrequestdone = this._onrequestdone;
     return rd;
   }
+
+  RequestDescriptor.prototype.save = save;
 
   function waitingForResponse(context) {
     //waiting for ajax response
